@@ -41,6 +41,19 @@ Bereitstellung,Mobile-First / Responsive Web App (PWA-ready)
 └── tailwind.config.js
 ```
 
+Namenskonventionen: <html><body>
+<!--StartFragment--><html><head></head><body>
+Präfix | Beschreibung | Beispiel
+-- | -- | --
+feat/ | Neue Funktionen oder Erweiterungen | feat/issue-ID-titel
+fix/ | Fehlerbehebungen (Bugfixes) | fix/issue-ID-titel
+docs/ | Dokumentationsänderungen | docs/update-readme
+refactor/ | Code-Optimierung ohne neue Funktionen | refactor/cleanup-api
+
+</body></html><!--EndFragment-->
+</body>
+</html>
+
 ## 📅 Projekt-Plan
 - **Woche 1:** Setup & Auth (Epic 1)
 - **Woche 2:** Kurse & Permissions (Epic 2 & 4)
