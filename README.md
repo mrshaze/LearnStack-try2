@@ -10,19 +10,11 @@ Eine moderne Lernplattform für Schüler, Dozenten und Admins.
 5. **Entwicklung:** `bun run dev`
 
 ## 🛠 Tech Stack
-- **Frontend/Backend:** 
-- **Auth:** Auth & Keycloak (inkl. 2FA)
+- **Frontend/Backend:** Next.js 
+- **Auth:** Auth & Authentik (inkl. 2FA)
 - **Styling:** TailwindCSS
 - **DB:** PostgreSQL
 
-Vorschlag:
-Framework,"Next.js (App Router, RSC)" alternativen Vue, Angular offen für Vorschläge
-Styling,TailwindCSS
-Authentifizierung,Keycloak (Provider) + NextAuth.js (Integration) + 2FA
-Datenbank,PostgreSQL
-Infrastruktur,Docker-compose (Local Dev)
-Design/UI,"Figma (Design), Framer (Animationen)"
-Bereitstellung,Mobile-First / Responsive Web App (PWA-ready)
 
 ## 📂 Repo-Struktur (Vorschlag)
 ```
