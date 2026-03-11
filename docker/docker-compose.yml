@@ -70,6 +70,10 @@ services:
       POSTGRES_DB: ${PG_DEV_DB:-learnstack}
       POSTGRES_PASSWORD: ${PG_DEV_PASS:?database password required}
       POSTGRES_USER: ${PG_DEV_USER:-learnstack}
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    ports:
+      - 5432:5432
     healthcheck:
       interval: 30s
       retries: 5
