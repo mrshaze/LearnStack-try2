@@ -36,8 +36,9 @@ COPY --from=builder --chown=bun:bun /app/.next/standalone ./
 COPY --from=builder --chown=bun:bun /app/.next/static ./.next/static
 
 
-# If you want to persist the fetch cache generated during the build so that
-# cached responses are available immediately on startup, uncomment this line:
+# Persist the fetch cache generated during the build so that
+# cached responses are available immediately on startup.
+# Comment out this line if you want to reduce image size at the cost of initial request latency.
 COPY --from=builder --chown=bun:bun /app/.next/cache ./.next/cache
 
 # Switch to non-root user for security best practices
