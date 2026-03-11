@@ -33,6 +33,14 @@ Eine moderne Lernplattform für Schüler, Dozenten und Admins.
 └── tailwind.config.js
 ```
 
+Namenskonventionen: 
+Präfix | Beschreibung | Beispiel
+-- | -- | --
+feat/ | Neue Funktionen oder Erweiterungen | feat/issue-ID-titel
+fix/ | Fehlerbehebungen (Bugfixes) | fix/issue-ID-titel
+docs/ | Dokumentationsänderungen | docs/update-readme
+refactor/ | Code-Optimierung ohne neue Funktionen | refactor/cleanup-api
+
 ## 📅 Projekt-Plan
 - **Woche 1:** Setup & Auth (Epic 1)
 - **Woche 2:** Kurse & Permissions (Epic 2 & 4)
