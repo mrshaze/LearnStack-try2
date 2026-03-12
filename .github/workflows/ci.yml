@@ -56,6 +56,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+      artifact-metadata: write
     needs: build
     steps:
       - name: Checkout repository
@@ -115,7 +116,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
+      - name: Attest
+        uses: actions/attest@v4
+        id: attest
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-path: '${{ github.workspace }}/.'
+          push-to-registry: true
 #      - name: Generate artifact attestation
 #        uses: actions/attest-build-provenance@v3
 #        with:
