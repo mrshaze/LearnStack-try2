@@ -5,7 +5,10 @@ on:
     branches: [ "development", "feature/*", "fix/*", "feat/*" ]
   pull_request:
     branches: [ "development", "main", "master" ]
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+  
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
