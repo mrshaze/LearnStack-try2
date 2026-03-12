@@ -8,7 +8,7 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-  
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -124,7 +124,7 @@ jobs:
         id: attest
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-path: '${{ github.workspace }}/.'
+          subject-path: '${{ github.workspace }}/'
           push-to-registry: true
 #      - name: Generate artifact attestation
 #        uses: actions/attest-build-provenance@v3
