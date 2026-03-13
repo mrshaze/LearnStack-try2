@@ -1,8 +1,8 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { SiteHeader } from "@/components/site-header"
+import { AppSidebar } from "@/components/dashboard_template/app-sidebar"
+import { ChartAreaInteractive } from "@/components/dashboard_template/chart-area-interactive"
+import { DataTable } from "@/components/dashboard_template/data-table"
+import { SectionCards } from "@/components/dashboard_template/section-cards"
+import { SiteHeader } from "@/components/dashboard_template/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 import data from "./data.json"
