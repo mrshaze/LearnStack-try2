@@ -11,9 +11,18 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { FieldError } from "@/components/ui/field"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import { signIn } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
+
+const formSchema = z.object({
+  email: z.string().email({ message: "Invalid email address." }),
+  password: z.string().min(1, { message: "Password is required." }),
+})
 
 export function LoginForm({
   className,
@@ -22,15 +31,20 @@ export function LoginForm({
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setError(null)
 
-    const formData = new FormData(e.currentTarget)
-
     const res = await signIn.email({
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
+      email: values.email,
+      password: values.password,
     })
 
     if (res.error) {
@@ -44,7 +58,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form onSubmit={handleSubmit} className="p-6 md:p-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8" noValidate>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -56,11 +70,11 @@ export function LoginForm({
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
+                  {...form.register("email")}
                 />
+                <FieldError errors={form.formState.errors.email ? [form.formState.errors.email] : undefined} />
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -72,12 +86,15 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" name="password" type="password" required />
+                <Input id="password" type="password" {...form.register("password")} />
+                <FieldError errors={form.formState.errors.password ? [form.formState.errors.password] : undefined} />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? "Logging in..." : "Login"}
+                </Button>
               </Field>
-              {error && <p className="text-red-500">{error}</p>}
+              {error && <p className="text-sm font-medium text-destructive">{error}</p>}
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>

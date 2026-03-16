@@ -15,7 +15,7 @@ export default async function Page() {
     headers: await headers(),
   })
 
-  if (!session) redirect("/sign-in")
+  if (!session) redirect("/login")
 
   return (
     <SidebarProvider

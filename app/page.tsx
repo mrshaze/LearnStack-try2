@@ -1,9 +1,12 @@
 "use client"
 
+import { useSession } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 
 export default function Home() {
+  const { data: session } = useSession()
   const router = useRouter()
+  if (session?.user) router.push("/dashboard")
 
   return (
     <main className="flex h-screen items-center justify-center bg-neutral-950 text-white">

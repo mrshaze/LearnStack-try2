@@ -42,3 +42,11 @@ docker/database_authentik/*
 docker/database_learnstack/*
 docker/grafana-storage/*
 /app/generated/prisma
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
