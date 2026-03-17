@@ -37,10 +37,10 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-docker/database/*
-docker/database_authentik/*
-docker/database_learnstack/*
-docker/grafana-storage/*
+docker/database/
+docker/database_authentik/
+docker/database_learnstack/
+docker/grafana-storage/
 /app/generated/prisma
 
 # Playwright
