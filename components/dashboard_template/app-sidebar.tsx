@@ -32,17 +32,17 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: <LayoutDashboardIcon />,
     },
     {
       title: "Courses",
-      url: "#",
+      url: "/dashboard/courses",
       icon: <NotebookTextIcon />,
     },
     {
       title: "Schedule",
-      url: "#",
+      url: "/dashboard/schedule",
       icon: <CalendarDaysIcon />,
     },
   ],
