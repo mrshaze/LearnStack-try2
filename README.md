@@ -1,5 +1,5 @@
 # 🎓 EduPlatform LearnStack - Scrum Project (3 Weeks)
-
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/AE0125/LearnStack?utm_source=oss&utm_medium=github&utm_campaign=AE0125%2FLearnStack&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 Eine moderne Lernplattform für Schüler, Dozenten und Admins.
 
 ## 🚀 Quick Start
