@@ -1,8 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
+// -----------------------------------------------------------------------------
+// 1. Konfiguration & Datenquelle
+// -----------------------------------------------------------------------------
 generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
@@ -12,31 +10,96 @@ datasource db {
   provider = "postgresql"
 }
 
+// -----------------------------------------------------------------------------
+// 2. Enums (Konstanten)
+// -----------------------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  TUTOR
+  STUDENT
+}
+
+// -----------------------------------------------------------------------------
+// 3. Kern-Modelle (Hauptentitäten)
+// -----------------------------------------------------------------------------
+
 model User {
-  id            String    @id
+  /// Eindeutige ID (wird oft durch Auth-Provider gesetzt)
+  id            String  @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  role          Role    @default(STUDENT)
+
+  /// Zeitstempel
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Relationen
+  sessions    Session[]
+  accounts    Account[]
+  enrollments Enrollment[]
 
   @@unique([email])
   @@map("user")
 }
 
+model Course {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+
+  /// Zeitstempel
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Relationen
+  enrollments Enrollment[]
+
+  @@map("course")
+}
+
+// -----------------------------------------------------------------------------
+// 4. Relationen (Join-Tables)
+// -----------------------------------------------------------------------------
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Relation: User
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Relation: Course
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@map("enrollment")
+}
+
+// -----------------------------------------------------------------------------
+// 5. Authentifizierung (Auth-Provider spezifisch)
+// -----------------------------------------------------------------------------
+
 model Session {
   id        String   @id
   expiresAt DateTime
   token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Relation: User
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@index([userId])
@@ -56,8 +119,9 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@map("account")
