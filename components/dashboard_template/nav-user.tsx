@@ -24,13 +24,30 @@ import {
   BellIcon,
   LogOutIcon,
 } from "lucide-react"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
   const { data: session } = useSession()
   const user = session?.user
+  const router = useRouter()
 
   if (!user) return null
+
+  const handleLogout = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          toast.success("Logged out successfully")
+          router.push("/login")
+        },
+        onError: () => {
+          toast.error("Failed to log out")
+        },
+      },
+    })
+  }
 
   return (
     <SidebarMenu>
@@ -96,7 +113,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { NavDocuments } from "@/components/dashboard_template/nav-documents"
 import { NavMain } from "@/components/dashboard_template/nav-main"
 import { NavSecondary } from "@/components/dashboard_template/nav-secondary"
 import { NavUser } from "@/components/dashboard_template/nav-user"

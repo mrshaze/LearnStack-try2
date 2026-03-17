@@ -42,9 +42,9 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setError(null)
 
-    const res = await signIn.email({
-      email: values.email,
-      password: values.password,
+    const res = await signIn.oauth2({
+      providerId: "authentik",
+      callbackURL: "/dashboard",
     })
 
     if (res.error) {
@@ -58,7 +58,11 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8" noValidate>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="p-6 md:p-8"
+            noValidate
+          >
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -74,7 +78,13 @@ export function LoginForm({
                   placeholder="m@example.com"
                   {...form.register("email")}
                 />
-                <FieldError errors={form.formState.errors.email ? [form.formState.errors.email] : undefined} />
+                <FieldError
+                  errors={
+                    form.formState.errors.email
+                      ? [form.formState.errors.email]
+                      : undefined
+                  }
+                />
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -86,15 +96,27 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" {...form.register("password")} />
-                <FieldError errors={form.formState.errors.password ? [form.formState.errors.password] : undefined} />
+                <Input
+                  id="password"
+                  type="password"
+                  {...form.register("password")}
+                />
+                <FieldError
+                  errors={
+                    form.formState.errors.password
+                      ? [form.formState.errors.password]
+                      : undefined
+                  }
+                />
               </Field>
               <Field>
                 <Button type="submit" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting ? "Logging in..." : "Login"}
                 </Button>
               </Field>
-              {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+              {error && (
+                <p className="text-sm font-medium text-destructive">{error}</p>
+              )}
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>
