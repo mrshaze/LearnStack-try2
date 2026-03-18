@@ -1,17 +1,16 @@
 import { LayoutDashboard, Database, Brain, Plus } from "lucide-react"
 import { CourseCard } from "./course-card"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 
 export function ActiveCourses() {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-xl font-bold tracking-tight">Active Courses</h3>
-        <a
-          className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
-          href="#"
-        >
-          View all
-        </a>
+        <Button variant="link" className="px-0 text-primary hover:text-primary/80" asChild>
+          <a href="#">View all</a>
+        </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <CourseCard
@@ -39,17 +38,20 @@ export function ActiveCourses() {
           iconColorClass="bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
         />
         {/* <!-- Add New Course Placeholder --> */}
-        <div className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:bg-slate-800">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
-            <Plus className="h-5 w-5" />
-          </div>
-          <p className="font-medium text-slate-900 dark:text-slate-100">
-            Enroll in Course
-          </p>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Browse the catalog
-          </p>
-        </div>
+        {/* <!-- Add New Course Placeholder --> */}
+        <Card className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center border-dashed border-slate-300 bg-slate-50 text-center transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:bg-slate-800">
+          <CardContent className="flex flex-col items-center justify-center p-5">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+              <Plus className="h-5 w-5" />
+            </div>
+            <p className="font-medium text-slate-900 dark:text-slate-100">
+              Enroll in Course
+            </p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              Browse the catalog
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

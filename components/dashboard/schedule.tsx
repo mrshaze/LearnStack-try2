@@ -1,16 +1,18 @@
 import { MoreHorizontal, Plus } from "lucide-react"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 export function Schedule() {
   return (
     <div className="xl:col-span-1">
-      <div className="sticky top-24 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex items-center justify-between border-b border-slate-200 p-5 dark:border-slate-800">
-          <h3 className="text-lg font-bold tracking-tight">Today&apos;s Schedule</h3>
-          <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+      <Card className="sticky top-24 overflow-hidden border-slate-200 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b border-slate-200 p-5 dark:border-slate-800">
+          <CardTitle className="text-lg font-bold tracking-tight">Today&apos;s Schedule</CardTitle>
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
             <MoreHorizontal className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="p-5">
+          </Button>
+        </CardHeader>
+        <CardContent className="p-5">
           <div className="relative ml-3 space-y-6 border-l border-slate-200 pb-4 dark:border-slate-800">
             {/* <!-- Timeline Item 1 (Past) --> */}
             <div className="relative pl-6 opacity-60">
@@ -71,12 +73,12 @@ export function Schedule() {
               </div>
             </div>
           </div>
-          <button className="mt-2 flex w-full items-center justify-center gap-1 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
-            <Plus className="h-4 w-4" />
+          <Button variant="ghost" className="mt-2 w-full text-slate-600 dark:text-slate-400">
+            <Plus className="mr-2 h-4 w-4" />
             Add Event
-          </button>
-        </div>
-      </div>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button"
+
 export function UpNextBanner() {
   return (
     <div className="relative flex flex-col items-start justify-between gap-4 overflow-hidden rounded-xl bg-primary p-6 text-white shadow-sm sm:flex-row sm:items-center">
@@ -11,9 +13,9 @@ export function UpNextBanner() {
           Advanced UI Design • Module 4
         </p>
       </div>
-      <button className="relative z-10 rounded-lg bg-white px-5 py-2.5 font-medium whitespace-nowrap text-primary shadow-sm transition-colors hover:bg-slate-50">
+      <Button variant="secondary" className="relative z-10 bg-white text-primary hover:bg-slate-50">
         Continue Module
-      </button>
+      </Button>
     </div>
   )
 }
