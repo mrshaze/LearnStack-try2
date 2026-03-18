@@ -25,6 +25,7 @@ import {
   CommandIcon,
   CalendarDaysIcon,
   NotebookTextIcon,
+  Upload,
 } from "lucide-react"
 
 const data = {
@@ -43,6 +44,11 @@ const data = {
       title: "Schedule",
       url: "/dashboard/schedule",
       icon: <CalendarDaysIcon />,
+    },
+    {
+      title: "Upload",
+      url: "/dashboard/upload",
+      icon: <Upload className="size-4" />,
     },
   ],
   navSecondary: [

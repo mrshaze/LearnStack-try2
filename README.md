@@ -57,7 +57,5 @@ Im browser http://localhost:9000/if/flow/initial-setup/
 Application erstellen
 clientid und secret in die .env übertragen
 
-
-
 Redirect URL
 http://localhost:3000/api/auth/callback/authentik
