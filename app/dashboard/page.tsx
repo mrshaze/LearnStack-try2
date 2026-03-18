@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { LayoutDashboard, Database, Brain, Plus, MoreHorizontal } from "lucide-react"
 
 export default async function Page() {
   const session = await auth.api.getSession({
@@ -68,9 +69,7 @@ export default async function Page() {
                       <div className="group cursor-pointer rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
                         <div className="mb-4 flex items-start justify-between">
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
-                            <span className="material-symbols-outlined">
-                              design_services
-                            </span>
+                            <LayoutDashboard className="h-5 w-5" />
                           </div>
                           <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                             CS 401
@@ -101,9 +100,7 @@ export default async function Page() {
                       <div className="group cursor-pointer rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
                         <div className="mb-4 flex items-start justify-between">
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
-                            <span className="material-symbols-outlined">
-                              data_object
-                            </span>
+                            <Database className="h-5 w-5" />
                           </div>
                           <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                             CS 305
@@ -134,9 +131,7 @@ export default async function Page() {
                       <div className="group cursor-pointer rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
                         <div className="mb-4 flex items-start justify-between">
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                            <span className="material-symbols-outlined">
-                              psychology
-                            </span>
+                            <Brain className="h-5 w-5" />
                           </div>
                           <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                             PSY 101
@@ -166,7 +161,7 @@ export default async function Page() {
                       {/* <!-- Add New Course Placeholder --> */}
                       <div className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:bg-slate-800">
                         <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
-                          <span className="material-symbols-outlined">add</span>
+                          <Plus className="h-5 w-5" />
                         </div>
                         <p className="font-medium text-slate-900 dark:text-slate-100">
                           Enroll in Course
@@ -186,9 +181,7 @@ export default async function Page() {
                         Today&apos;s Schedule
                       </h3>
                       <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                        <span className="material-symbols-outlined text-xl">
-                          more_horiz
-                        </span>
+                        <MoreHorizontal className="h-5 w-5" />
                       </button>
                     </div>
                     <div className="p-5">
@@ -257,9 +250,7 @@ export default async function Page() {
                         </div>
                       </div>
                       <button className="mt-2 flex w-full items-center justify-center gap-1 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
-                        <span className="material-symbols-outlined text-sm">
-                          add
-                        </span>
+                        <Plus className="h-4 w-4" />
                         Add Event
                       </button>
                     </div>
