@@ -9,6 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { SettingsDialog } from "../dashboard/settings-dialog"
 
 export function NavSecondary({
   items,
@@ -34,6 +35,7 @@ export function NavSecondary({
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+          <SettingsDialog />
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
