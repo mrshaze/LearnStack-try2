@@ -8,7 +8,11 @@ export function ActiveCourses() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-xl font-bold tracking-tight">Active Courses</h3>
-        <Button variant="link" className="px-0 text-primary hover:text-primary/80" asChild>
+        <Button
+          variant="link"
+          className="px-0 text-primary hover:text-primary/80"
+          asChild
+        >
           <a href="#">View all</a>
         </Button>
       </div>

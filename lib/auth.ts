@@ -37,6 +37,11 @@ export const auth = betterAuth({
       role: {
         type: "string",
         defaultValue: "STUDENT"
+      },
+      enrollments: {
+        type: "relation",
+        relation: "Enrollment",
+        mode: "many",
       }
     }
   }
