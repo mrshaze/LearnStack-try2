@@ -50,6 +50,8 @@ model Course {
   id          String  @id @default(cuid())
   title       String
   description String?
+  image       String?
+  code        String?
 
   /// Zeitstempel
   createdAt DateTime @default(now())
@@ -69,6 +71,7 @@ model Enrollment {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  progress  Int      @default(0)
 
   /// Relation: User
   userId String
