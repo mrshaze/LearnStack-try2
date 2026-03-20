@@ -45,3 +45,17 @@ refactor/ | Code-Optimierung ohne neue Funktionen | refactor/cleanup-api
 - **Woche 1:** Setup & Auth (Epic 1)
 - **Woche 2:** Kurse & Permissions (Epic 2 & 4)
 - **Woche 3:** Kalender & Polishing (Epic 3)
+
+
+Goto directory docker/
+```bash
+cd docker
+docker compose up -d
+```
+
+Im browser http://localhost:9000/if/flow/initial-setup/
+Application erstellen
+clientid und secret in die .env übertragen
+
+Redirect URL
+http://localhost:3000/api/auth/callback/authentik
