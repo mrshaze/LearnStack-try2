@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -49,6 +47,70 @@ import {
   Edit2,
 } from "lucide-react"
 
+async function CreateUser() {
+  "use server"
+  const myHeaders = new Headers()
+  myHeaders.append("Content-Type", "application/json")
+  myHeaders.append("Accept", "application/json")
+  myHeaders.append(
+    "Authorization",
+    "Bearer d4AhxKIJUwZgDqwq7zAf3FFbmMvacJTzoJvgG6cHeNSCUfJDFsvAaFYOlgCN"
+  )
+
+  const raw = JSON.stringify({
+    username: "IT012503",
+    name: "IT012503",
+    is_active: true,
+    type: "internal",
+  })
+
+  const requestOptions: RequestInit = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  }
+
+  fetch("http://localhost:9000/api/v3/core/users/", requestOptions)
+    .then((response) => response.json())
+    .then(async (result) => {
+      await SetPassword(result.pk)
+      console.log(result)
+    })
+    .catch((error) => console.error(error))
+}
+
+async function SetPassword(id: string) {
+  "use server"
+  const myHeaders = new Headers()
+  myHeaders.append("Content-Type", "application/json")
+  myHeaders.append(
+    "Authorization",
+    "Bearer d4AhxKIJUwZgDqwq7zAf3FFbmMvacJTzoJvgG6cHeNSCUfJDFsvAaFYOlgCN"
+  )
+
+  const raw = JSON.stringify({
+    password: "test1234",
+  })
+
+  const requestOptions: RequestInit = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  }
+
+  fetch(
+    "http://localhost:9000/api/v3/core/users/" + id + "/set_password/",
+    requestOptions
+  )
+    .then((response) => response.text())
+    .then((result) => {
+      console.log("PW set" + result)
+    })
+    .catch((error) => console.error(error))
+}
+
 export default function Page() {
   const users = [
     {
@@ -91,7 +153,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
-      <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Users</h1>
           <p className="text-muted-foreground">
@@ -128,7 +190,11 @@ export default function Page() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder="john@university.edu" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="john@university.edu"
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -161,17 +227,19 @@ export default function Page() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Create Account</Button>
+              <Button className="w-full" onClick={CreateUser}>
+                Create Account
+              </Button>
             </CardFooter>
           </Card>
 
-          <Card className="bg-primary/5 border-primary/20">
+          <Card className="border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
               <div className="flex items-start gap-4">
-                <Info className="h-5 w-5 text-primary mt-0.5" />
+                <Info className="mt-0.5 h-5 w-5 text-primary" />
                 <div className="space-y-1">
                   <h4 className="text-sm font-bold">Quick Tip</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-xs leading-relaxed text-muted-foreground">
                     Use Batch Upload via CSV to invite multiple users at once.
                     Temporary passwords will be sent to their emails.
                   </p>
@@ -182,7 +250,7 @@ export default function Page() {
         </div>
 
         {/* Right Column: User List */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-4 lg:col-span-2">
           <div className="flex items-center justify-between">
             <Tabs defaultValue="all" className="w-[400px]">
               <TabsList>
@@ -213,12 +281,12 @@ export default function Page() {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                          <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary">
                             {user.initials}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium leading-none">
+                          <p className="text-sm leading-none font-medium">
                             {user.name}
                           </p>
                           <p className="text-xs text-muted-foreground">
@@ -267,17 +335,22 @@ export default function Page() {
                 ))}
               </TableBody>
             </Table>
-            <CardFooter className="flex items-center justify-between py-4 border-t">
+            <CardFooter className="flex items-center justify-between border-t py-4">
               <p className="text-xs text-muted-foreground">
                 Showing 1 to 4 of 48 users
               </p>
-              <Pagination className="justify-end w-auto mx-0">
+              <Pagination className="mx-0 w-auto justify-end">
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href="#" className="pointer-events-none opacity-50" />
+                    <PaginationPrevious
+                      href="#"
+                      className="pointer-events-none opacity-50"
+                    />
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" isActive>1</PaginationLink>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
                     <PaginationLink href="#">2</PaginationLink>

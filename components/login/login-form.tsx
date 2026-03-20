@@ -20,7 +20,7 @@ import { signIn } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
+  email: z.string().min(1, { message: "Email is required." }),
   password: z.string().min(1, { message: "Password is required." }),
 })
 

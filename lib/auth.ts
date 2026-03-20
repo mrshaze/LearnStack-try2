@@ -3,6 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import {genericOAuth} from "better-auth/plugins"
+import {admin} from "better-auth/plugins"
 
 export const auth = betterAuth({
   appName: "LearnStack",
@@ -16,6 +17,7 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   plugins: [
+    admin(),
     genericOAuth({
       config: [
         {
