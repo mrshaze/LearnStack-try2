@@ -46,6 +46,8 @@ import {
   ShieldCheck,
   Edit2,
 } from "lucide-react"
+import prisma from "@/lib/prisma"
+import { Role } from "@/app/generated/prisma/enums"
 
 async function CreateUser() {
   "use server"
@@ -111,7 +113,7 @@ async function SetPassword(id: string) {
     .catch((error) => console.error(error))
 }
 
-export default function Page() {
+export default async function Page() {
   const users = [
     {
       id: "1",
@@ -150,6 +152,13 @@ export default function Page() {
       initials: "DC",
     },
   ]
+
+  const usrs = await prisma.user.findMany({
+    include: {
+      enrollments: true,
+      group: true,
+    },
+  })
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
@@ -276,6 +285,77 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {usrs.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary">
+                            {user.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm leading-none font-medium">
+                            {user.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="font-medium">
+                        {user.type === Role.STUDENT && (
+                          <GraduationCap className="mr-1 h-3 w-3" />
+                        )}
+                        {user.type === Role.TUTOR && (
+                          <User className="mr-1 h-3 w-3" />
+                        )}
+                        {user.type === Role.ADMIN && (
+                          <ShieldCheck className="mr-1 h-3 w-3" />
+                        )}
+                        {user.type.toLowerCase().charAt(0).toUpperCase() +
+                          user.type.toLowerCase().slice(1)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {user.group ? (
+                        <Badge
+                          variant="outline"
+                          className="font-medium"
+                          style={{
+                            backgroundColor: user.group.color || undefined,
+                            color: user.group.color ? "white" : undefined,
+                          }}
+                        >
+                          {user.group.code}
+                        </Badge>
+                      ) : (
+                        <span>-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`h-2 w-2 rounded-full ${
+                            user.banned === false
+                              ? "bg-emerald-500"
+                              : "bg-amber-500"
+                          }`}
+                        />
+                        <span className="text-xs font-medium">
+                          {user.banned ? "Banned" : "Active"}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon">
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
                 {users.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>
