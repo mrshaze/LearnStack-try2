@@ -19,6 +19,7 @@ enum Role {
   ADMIN
   TUTOR
   STUDENT
+  user
 }
 
 // -----------------------------------------------------------------------------
@@ -32,7 +33,7 @@ model User {
   email         String
   emailVerified Boolean @default(false)
   image         String?
-  role          Role    @default(STUDENT)
+  role          String? @default("user")
 
   /// Zeitstempel
   createdAt DateTime @default(now())
