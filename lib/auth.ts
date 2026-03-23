@@ -17,6 +17,13 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  account: {
+    accountLinking: {
+      enabled: true,
+      allowDifferentEmails: true,
+      trustedProviders: ["authentik"],
+    },
+  },
   plugins: [
     admin(),
     dash(),

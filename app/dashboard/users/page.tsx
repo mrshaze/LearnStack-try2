@@ -2,20 +2,8 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -36,7 +24,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import {
-  PlusCircle,
   Info,
   MoreVertical,
   Filter,
@@ -48,70 +35,9 @@ import {
 } from "lucide-react"
 import prisma from "@/lib/prisma"
 import { Role } from "@/app/generated/prisma/enums"
+import CreateUserForm from "./create-user-form"
 
-async function CreateUser() {
-  "use server"
-  const myHeaders = new Headers()
-  myHeaders.append("Content-Type", "application/json")
-  myHeaders.append("Accept", "application/json")
-  myHeaders.append(
-    "Authorization",
-    "Bearer d4AhxKIJUwZgDqwq7zAf3FFbmMvacJTzoJvgG6cHeNSCUfJDFsvAaFYOlgCN"
-  )
 
-  const raw = JSON.stringify({
-    username: "IT012503",
-    name: "IT012503",
-    is_active: true,
-    type: "internal",
-  })
-
-  const requestOptions: RequestInit = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  }
-
-  fetch("http://localhost:9000/api/v3/core/users/", requestOptions)
-    .then((response) => response.json())
-    .then(async (result) => {
-      await SetPassword(result.pk)
-      console.log(result)
-    })
-    .catch((error) => console.error(error))
-}
-
-async function SetPassword(id: string) {
-  "use server"
-  const myHeaders = new Headers()
-  myHeaders.append("Content-Type", "application/json")
-  myHeaders.append(
-    "Authorization",
-    "Bearer d4AhxKIJUwZgDqwq7zAf3FFbmMvacJTzoJvgG6cHeNSCUfJDFsvAaFYOlgCN"
-  )
-
-  const raw = JSON.stringify({
-    password: "test1234",
-  })
-
-  const requestOptions: RequestInit = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  }
-
-  fetch(
-    "http://localhost:9000/api/v3/core/users/" + id + "/set_password/",
-    requestOptions
-  )
-    .then((response) => response.text())
-    .then((result) => {
-      console.log("PW set" + result)
-    })
-    .catch((error) => console.error(error))
-}
 
 export default async function Page() {
   const users = [
@@ -160,6 +86,8 @@ export default async function Page() {
     },
   })
 
+  const groups = await prisma.group.findMany()
+
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -182,65 +110,7 @@ export default async function Page() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Left Column: User Creation Form */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PlusCircle className="h-5 w-5 text-primary" />
-                New User Account
-              </CardTitle>
-              <CardDescription>
-                Manually add a single user to the platform.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" placeholder="John Doe" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="john@university.edu"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="role">Role</Label>
-                  <Select>
-                    <SelectTrigger id="role">
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="student">Student</SelectItem>
-                      <SelectItem value="instructor">Instructor</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dept">Department</Label>
-                  <Select>
-                    <SelectTrigger id="dept">
-                      <SelectValue placeholder="Select dept" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cs">Computer Science</SelectItem>
-                      <SelectItem value="math">Mathematics</SelectItem>
-                      <SelectItem value="physics">Physics</SelectItem>
-                      <SelectItem value="arts">Arts & Design</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" onClick={CreateUser}>
-                Create Account
-              </Button>
-            </CardFooter>
-          </Card>
+          <CreateUserForm groups={groups} />
 
           <Card className="border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
