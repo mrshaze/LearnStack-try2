@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import {genericOAuth} from "better-auth/plugins"
 import {admin} from "better-auth/plugins"
+import { dash } from "@better-auth/infra";
 
 export const auth = betterAuth({
   appName: "LearnStack",
@@ -18,6 +19,7 @@ export const auth = betterAuth({
   }),
   plugins: [
     admin(),
+    dash(),
     genericOAuth({
       config: [
         {
@@ -36,14 +38,9 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      role: {
+      type: {
         type: "string",
         defaultValue: "STUDENT"
-      },
-      enrollments: {
-        type: "relation",
-        relation: "Enrollment",
-        mode: "many",
       }
     }
   }
