@@ -2,11 +2,14 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import {genericOAuth} from "better-auth/plugins"
 import {admin} from "better-auth/plugins"
-import { dash } from "@better-auth/infra";
-
+import { nextCookies } from "better-auth/next-js";
+import { username } from "better-auth/plugins"
 export const auth = betterAuth({
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false,
+  },
   appName: "LearnStack",
   session: {
     cookieCache: {
@@ -20,23 +23,12 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true,
-      allowDifferentEmails: true,
-      trustedProviders: ["authentik"],
     },
   },
   plugins: [
     admin(),
-    dash(),
-    genericOAuth({
-      config: [
-        {
-          providerId: "authentik",
-          clientId: process.env.AUTHENTIK_CLIENT_ID as string,
-          clientSecret: process.env.AUTHENTIK_CLIENT_SECRET as string,
-          discoveryUrl: process.env.AUTHENTIK_ISSUER as string,
-        }
-      ]
-    })
+    nextCookies(),
+    username(),
   ],
   signIn: {
     onSuccess: async () => {

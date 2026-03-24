@@ -51,6 +51,9 @@ model User {
   groupId    String?
   memberId   String    @default("")
 
+  username        String? @unique
+  displayUsername String?
+
   @@unique([email])
   @@unique([groupId, memberId])
   @@map("user")
