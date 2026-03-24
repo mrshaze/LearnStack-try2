@@ -58,6 +58,9 @@ model Course {
   description String?
   image       String?
   code        String?
+  length      String?
+  literature  String?
+  material    String?
 
   /// Zeitstempel
   createdAt DateTime @default(now())
