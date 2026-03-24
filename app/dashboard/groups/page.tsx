@@ -28,6 +28,7 @@ import {
 } from "lucide-react"
 import { getGroups } from "@/services/group.service"
 import { createGroupAction } from "./actions"
+import { GroupDetailsDialog } from "./group-details-dialog"
 
 export default async function GroupsPage() {
   const groups = await getGroups()
@@ -147,9 +148,16 @@ export default async function GroupsPage() {
                       {group.createdAt.toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon">
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center justify-end gap-2">
+                        <GroupDetailsDialog group={group}>
+                          <Button variant="ghost" size="icon" title="View Details">
+                            <Info className="h-4 w-4" />
+                          </Button>
+                        </GroupDetailsDialog>
+                        <Button variant="ghost" size="icon" title="Edit Group">
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
