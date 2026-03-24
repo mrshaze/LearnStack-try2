@@ -6,6 +6,7 @@ import { WelcomeHeader } from "@/components/dashboard/welcome-header"
 import { UpNextBanner } from "@/components/dashboard/up-next-banner"
 import { ActiveCourses } from "@/components/dashboard/active-courses"
 import { Schedule } from "@/components/dashboard/schedule"
+import prisma from "@/lib/prisma"
 
 export default async function Page() {
   const session = await auth.api.getSession({
@@ -14,7 +15,7 @@ export default async function Page() {
 
   if (!session) redirect("/login")
 
-  const enrollments = await prisma.enrollment.findMany({
+  const dbEnrollments = await prisma.enrollment.findMany({
     where: {
       userId: session.user.id,
     },
@@ -22,10 +23,33 @@ export default async function Page() {
       course: true,
     },
     orderBy: {
-      createdAt: "desc",
+      updatedAt: "desc",
     },
-    take: 4,
+    take: 3,
   })
+
+  // Always displayed example enrollment
+  const exampleEnrollment = {
+    id: "example-enr-1",
+    userId: session.user.id,
+    courseId: "example-course-1",
+    progress: 15,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    course: {
+      id: "example-course-1",
+      title: "Welcome to LearnStack",
+      description: "Getting started tutorial",
+      image: null,
+      code: "LS 101",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  }
+
+  const enrollments = [exampleEnrollment, ...dbEnrollments]
+
+  const upNextCourse = enrollments.length > 0 ? enrollments[0] : null
 
   return (
     <div className="flex flex-1 flex-col">
@@ -35,7 +59,7 @@ export default async function Page() {
             <WelcomeHeader userName={session.user?.name} />
             <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
               <div className="space-y-8 xl:col-span-2">
-                <UpNextBanner />
+                <UpNextBanner enrollment={upNextCourse} />
                 <ActiveCourses enrollments={enrollments} />
               </div>
               <Schedule />
