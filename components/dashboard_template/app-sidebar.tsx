@@ -26,6 +26,8 @@ import {
   CalendarDaysIcon,
   NotebookTextIcon,
   Upload,
+  UserIcon,
+  UsersRound,
 } from "lucide-react"
 
 const data = {
@@ -85,6 +87,18 @@ const data = {
       icon: <FileIcon />,
     },
   ],
+  navAdmin: [
+    {
+      title: "Users",
+      url: "/dashboard/users",
+      icon: <UserIcon />,
+    },
+    {
+      title: "Groups",
+      url: "/dashboard/groups",
+      icon: <UsersRound />,
+    },
+  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -107,6 +121,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
+        <NavMain items={data.navAdmin} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

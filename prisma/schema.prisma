@@ -19,7 +19,6 @@ enum Role {
   ADMIN
   TUTOR
   STUDENT
-  user
 }
 
 // -----------------------------------------------------------------------------
@@ -34,6 +33,7 @@ model User {
   emailVerified Boolean @default(false)
   image         String?
   role          String? @default("user")
+  type          Role    @default(STUDENT)
 
   /// Zeitstempel
   createdAt DateTime @default(now())
@@ -47,9 +47,29 @@ model User {
   banned     Boolean?  @default(false)
   banReason  String?
   banExpires DateTime?
+  group      Group?    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId    String?
+  memberId   String    @default("")
+
+  username        String? @unique
+  displayUsername String?
 
   @@unique([email])
+  @@unique([groupId, memberId])
   @@map("user")
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  color     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Relationen
+  users User[]
+
+  @@map("group")
 }
 
 model Course {

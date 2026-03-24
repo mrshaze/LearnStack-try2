@@ -42,9 +42,11 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setError(null)
 
-    const res = await signIn.oauth2({
-      providerId: "authentik",
+    const res = await signIn.email({
+      email: values.email,
+      password: values.password,
       callbackURL: "/dashboard",
+      rememberMe: true,
     })
 
     if (res.error) {
