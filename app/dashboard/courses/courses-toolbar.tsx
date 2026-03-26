@@ -6,6 +6,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Kbd } from "@/components/ui/kbd"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export function CoursesToolbar() {
   return (
@@ -20,13 +22,19 @@ export function CoursesToolbar() {
         </InputGroupAddon>
       </InputGroup>
 
-      <Tabs defaultValue="active" className="w-full sm:w-auto">
-        <TabsList className="w-full justify-start overflow-x-auto">
-          <TabsTrigger value="active">Active (4)</TabsTrigger>
-          <TabsTrigger value="completed">Completed (12)</TabsTrigger>
-          <TabsTrigger value="saved">Saved (2)</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <div className="flex flex-1 items-center gap-4 sm:justify-end">
+        <Tabs defaultValue="active" className="w-full sm:w-auto">
+          <TabsList className="w-full justify-start overflow-x-auto">
+            <TabsTrigger value="active">Active (4)</TabsTrigger>
+            <TabsTrigger value="completed">Completed (12)</TabsTrigger>
+            <TabsTrigger value="saved">Saved (2)</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        
+        <Button asChild>
+          <Link href="/dashboard/courses/new">Neuer Kurs</Link>
+        </Button>
+      </div>
     </div>
   )
 }

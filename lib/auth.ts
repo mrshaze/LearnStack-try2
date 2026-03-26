@@ -37,10 +37,7 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      type: {
-        type: "string",
-        defaultValue: "STUDENT"
-      }
+      
     }
   }
 });
