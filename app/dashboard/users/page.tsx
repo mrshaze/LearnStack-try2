@@ -1,23 +1,9 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -38,7 +24,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import {
-  PlusCircle,
   Info,
   MoreVertical,
   Filter,
@@ -48,8 +33,13 @@ import {
   ShieldCheck,
   Edit2,
 } from "lucide-react"
+import prisma from "@/lib/prisma"
+import { Role } from "@/app/generated/prisma/enums"
+import CreateUserForm from "./create-user-form"
 
-export default function Page() {
+
+
+export default async function Page() {
   const users = [
     {
       id: "1",
@@ -89,9 +79,18 @@ export default function Page() {
     },
   ]
 
+  const usrs = await prisma.user.findMany({
+    include: {
+      enrollments: true,
+      group: true,
+    },
+  })
+
+  const groups = await prisma.group.findMany()
+
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
-      <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Users</h1>
           <p className="text-muted-foreground">
@@ -111,67 +110,15 @@ export default function Page() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Left Column: User Creation Form */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PlusCircle className="h-5 w-5 text-primary" />
-                New User Account
-              </CardTitle>
-              <CardDescription>
-                Manually add a single user to the platform.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" placeholder="John Doe" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder="john@university.edu" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="role">Role</Label>
-                  <Select>
-                    <SelectTrigger id="role">
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="student">Student</SelectItem>
-                      <SelectItem value="instructor">Instructor</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dept">Department</Label>
-                  <Select>
-                    <SelectTrigger id="dept">
-                      <SelectValue placeholder="Select dept" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cs">Computer Science</SelectItem>
-                      <SelectItem value="math">Mathematics</SelectItem>
-                      <SelectItem value="physics">Physics</SelectItem>
-                      <SelectItem value="arts">Arts & Design</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full">Create Account</Button>
-            </CardFooter>
-          </Card>
+          <CreateUserForm groups={groups} />
 
-          <Card className="bg-primary/5 border-primary/20">
+          <Card className="border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
               <div className="flex items-start gap-4">
-                <Info className="h-5 w-5 text-primary mt-0.5" />
+                <Info className="mt-0.5 h-5 w-5 text-primary" />
                 <div className="space-y-1">
                   <h4 className="text-sm font-bold">Quick Tip</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-xs leading-relaxed text-muted-foreground">
                     Use Batch Upload via CSV to invite multiple users at once.
                     Temporary passwords will be sent to their emails.
                   </p>
@@ -182,7 +129,7 @@ export default function Page() {
         </div>
 
         {/* Right Column: User List */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-4 lg:col-span-2">
           <div className="flex items-center justify-between">
             <Tabs defaultValue="all" className="w-[400px]">
               <TabsList>
@@ -208,17 +155,88 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {usrs.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary">
+                            {user.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm leading-none font-medium">
+                            {user.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="font-medium">
+                        {user.type === Role.STUDENT && (
+                          <GraduationCap className="mr-1 h-3 w-3" />
+                        )}
+                        {user.type === Role.TUTOR && (
+                          <User className="mr-1 h-3 w-3" />
+                        )}
+                        {user.type === Role.ADMIN && (
+                          <ShieldCheck className="mr-1 h-3 w-3" />
+                        )}
+                        {user.type.toLowerCase().charAt(0).toUpperCase() +
+                          user.type.toLowerCase().slice(1)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {user.group ? (
+                        <Badge
+                          variant="outline"
+                          className="font-medium"
+                          style={{
+                            backgroundColor: user.group.color || undefined,
+                            color: user.group.color ? "white" : undefined,
+                          }}
+                        >
+                          {user.group.code}
+                        </Badge>
+                      ) : (
+                        <span>-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`h-2 w-2 rounded-full ${
+                            user.banned === false
+                              ? "bg-emerald-500"
+                              : "bg-amber-500"
+                          }`}
+                        />
+                        <span className="text-xs font-medium">
+                          {user.banned ? "Banned" : "Active"}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon">
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
                 {users.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                          <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary">
                             {user.initials}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium leading-none">
+                          <p className="text-sm leading-none font-medium">
                             {user.name}
                           </p>
                           <p className="text-xs text-muted-foreground">
@@ -267,17 +285,22 @@ export default function Page() {
                 ))}
               </TableBody>
             </Table>
-            <CardFooter className="flex items-center justify-between py-4 border-t">
+            <CardFooter className="flex items-center justify-between border-t py-4">
               <p className="text-xs text-muted-foreground">
                 Showing 1 to 4 of 48 users
               </p>
-              <Pagination className="justify-end w-auto mx-0">
+              <Pagination className="mx-0 w-auto justify-end">
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href="#" className="pointer-events-none opacity-50" />
+                    <PaginationPrevious
+                      href="#"
+                      className="pointer-events-none opacity-50"
+                    />
                   </PaginationItem>
                   <PaginationItem>
-                    <PaginationLink href="#" isActive>1</PaginationLink>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
                   </PaginationItem>
                   <PaginationItem>
                     <PaginationLink href="#">2</PaginationLink>

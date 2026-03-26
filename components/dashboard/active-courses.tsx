@@ -1,9 +1,17 @@
-import { LayoutDashboard, Database, Brain, Plus } from "lucide-react"
-import { CourseCard } from "./course-card"
+import { Plus, Globe } from "lucide-react"
+import { CourseCard } from "@/app/dashboard/courses/course-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Course, Enrollment } from "@/app/generated/prisma/client"
+import Link from "next/link"
 
-export function ActiveCourses() {
+type EnrollmentWithCourse = Enrollment & { course: Course }
+
+export function ActiveCourses({
+  enrollments = [],
+}: {
+  enrollments?: EnrollmentWithCourse[]
+}) {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
@@ -13,34 +21,27 @@ export function ActiveCourses() {
           className="px-0 text-primary hover:text-primary/80"
           asChild
         >
-          <a href="#">View all</a>
+          <Link href="/dashboard/courses">View all</Link>
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <CourseCard
-          icon={LayoutDashboard}
-          code="CS 401"
-          title="Advanced UI Design"
-          currentTopic="Typography Systems"
-          progress={64}
-          iconColorClass="bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-        />
-        <CourseCard
-          icon={Database}
-          code="CS 305"
-          title="Data Structures"
-          currentTopic="Binary Search Trees"
-          progress={42}
-          iconColorClass="bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
-        />
-        <CourseCard
-          icon={Brain}
-          code="PSY 101"
-          title="Cognitive Psychology"
-          currentTopic="Memory & Learning"
-          progress={88}
-          iconColorClass="bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
-        />
+        {enrollments.map((enrollment) => (
+          <CourseCard
+            key={enrollment.id}
+            id={enrollment.course.id}
+            title={enrollment.course.title}
+            code={enrollment.course.code || "N/A"}
+            instructor={"LearnStack Tutor"}
+            progress={enrollment.progress}
+            imageUrl={enrollment.course.image || undefined}
+            icon={
+              !enrollment.course.image ? (
+                <Globe className="h-6 w-6 text-muted-foreground/50 transition-colors group-hover:text-primary" />
+              ) : undefined
+            }
+            compact
+          />
+        ))}
         {/* <!-- Add New Course Placeholder --> */}
         {/* <!-- Add New Course Placeholder --> */}
         <Card className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center border-dashed border-slate-300 bg-slate-50 text-center transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:bg-slate-800">

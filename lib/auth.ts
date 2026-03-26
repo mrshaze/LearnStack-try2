@@ -2,9 +2,14 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import {genericOAuth} from "better-auth/plugins"
-
+import {admin} from "better-auth/plugins"
+import { nextCookies } from "better-auth/next-js";
+import { username } from "better-auth/plugins"
 export const auth = betterAuth({
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false,
+  },
   appName: "LearnStack",
   session: {
     cookieCache: {
@@ -15,17 +20,15 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  account: {
+    accountLinking: {
+      enabled: true,
+    },
+  },
   plugins: [
-    genericOAuth({
-      config: [
-        {
-          providerId: "authentik",
-          clientId: process.env.AUTHENTIK_CLIENT_ID as string,
-          clientSecret: process.env.AUTHENTIK_CLIENT_SECRET as string,
-          discoveryUrl: process.env.AUTHENTIK_ISSUER as string,
-        }
-      ]
-    })
+    admin(),
+    nextCookies(),
+    username(),
   ],
   signIn: {
     onSuccess: async () => {
@@ -34,15 +37,7 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      role: {
-        type: "string",
-        defaultValue: "STUDENT"
-      },
-      enrollments: {
-        type: "relation",
-        relation: "Enrollment",
-        mode: "many",
-      }
+      
     }
   }
 });

@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import prisma from "@/lib/prisma"
 import { WelcomeHeader } from "@/components/dashboard/welcome-header"
 import { UpNextBanner } from "@/components/dashboard/up-next-banner"
 import { ActiveCourses } from "@/components/dashboard/active-courses"
@@ -13,6 +14,19 @@ export default async function Page() {
 
   if (!session) redirect("/login")
 
+  const enrollments = await prisma.enrollment.findMany({
+    where: {
+      userId: session.user.id,
+    },
+    include: {
+      course: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 4,
+  })
+
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
@@ -22,7 +36,7 @@ export default async function Page() {
             <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
               <div className="space-y-8 xl:col-span-2">
                 <UpNextBanner />
-                <ActiveCourses />
+                <ActiveCourses enrollments={enrollments} />
               </div>
               <Schedule />
             </div>

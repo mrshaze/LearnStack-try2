@@ -20,7 +20,7 @@ import { signIn } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
+  email: z.string().min(1, { message: "Email is required." }),
   password: z.string().min(1, { message: "Password is required." }),
 })
 
@@ -42,9 +42,11 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setError(null)
 
-    const res = await signIn.oauth2({
-      providerId: "authentik",
+    const res = await signIn.email({
+      email: values.email,
+      password: values.password,
       callbackURL: "/dashboard",
+      rememberMe: true,
     })
 
     if (res.error) {
