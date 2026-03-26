@@ -1,90 +1,79 @@
 "use server"
 
-import { z } from "zod"
+
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { CreateUserFormValues, createUserSchema } from "./schema"
-
-
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 
 export async function createUserAction(data: CreateUserFormValues) {
   try {
     const validatedData = createUserSchema.parse(data)
-    const token = process.env.AUTHENTIK_API_TOKEN
+    
+    const count = validatedData.count || 1;
+    let groupCode = "";
 
-    if (!token) {
-      throw new Error("Authentik API token missing.")
-    }
-
-    // 1. Create User in Authentik
-    const authentikHeaders = new Headers({
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    })
-
-    const authentikUserData = {
-      username: validatedData.email,
-      name: validatedData.name,
-      email: validatedData.email,
-      is_active: true,
-      type: "internal", 
-      // Add other fields as necessary
-    }
-
-    const createRes = await fetch("http://localhost:9000/api/v3/core/users/", {
-      method: "POST",
-      headers: authentikHeaders,
-      body: JSON.stringify(authentikUserData),
-    })
-
-    if (!createRes.ok) {
-      const errText = await createRes.text()
-      console.error("Failed to create user in Authentik:", errText)
-      throw new Error("Failed to create user in identity provider.")
-    }
-
-    const authentikUser = await createRes.json()
-    const authentikUserId = authentikUser.pk.toString()
-
-    // 2. Set temporary password in Authentik
-    const tempPassword = Math.random().toString(36).slice(-8) + "Aa1!"
-
-    const setPwRes = await fetch(
-      `http://localhost:9000/api/v3/core/users/${authentikUserId}/set_password/`,
-      {
-        method: "POST",
-        headers: authentikHeaders,
-        body: JSON.stringify({ password: tempPassword }),
+    if (validatedData.groupId) {
+      const group = await prisma.group.findUnique({
+        where: { id: validatedData.groupId }
+      });
+      if (group) {
+        groupCode = group.code;
       }
-    )
-
-    if (!setPwRes.ok) {
-      const errText = await setPwRes.text()
-      console.error("Failed to set password in Authentik:", errText)
-      // Note: User exists in Authentik but has no password set. We proceed anyway or delete user.
-    } else {
-      console.log(`Password set for user ${validatedData.email}: ${tempPassword}`)
     }
 
-    // 3. Create user in local database
-    const newDbUser = await prisma.user.create({
-      data: {
-        id: authentikUserId,
-        name: validatedData.name,
-        email: validatedData.email,
-        type: validatedData.role,
-        groupId: validatedData.groupId || null,
-        memberId: Math.random().toString(36).substring(2, 9), // generate a random member ID if required
-      },
-    })
+    const createdUsers: { email: string; password?: string, name: string }[] = [];
+
+    for (let i = 0; i < count; i++) {
+        let currentEmail = validatedData.email || "";
+        let currentName = validatedData.name || "";
+        let currentMemberId = "";
+
+        if (count > 1) {
+            currentMemberId = String(validatedData.startMemberId + i).padStart(2, '0');
+            currentEmail = `${groupCode}${currentMemberId}@cbm.local`;
+            currentName = `${groupCode}${currentMemberId}`;
+        } else {
+            currentMemberId = Math.random().toString(36).substring(2, 9);
+        }
+
+        const tempPassword = Math.random().toString(36).slice(-8) + "Aa1!"
+
+        const newUser = await auth.api.createUser({
+            headers: await headers(),
+            body: {
+                email: currentEmail,
+                password: tempPassword,
+                name: currentName,
+                role: validatedData.role.toLowerCase() === "admin" ? "admin" : "user",
+                data: {
+                  type: validatedData.role,
+                },
+            },
+        });
+
+        if (!newUser || !newUser.user) {
+            throw new Error(`Failed to create user ${currentEmail}.`)
+        }
+
+        await prisma.user.update({
+            where: { id: newUser.user.id },
+            data: {
+                type: validatedData.role,
+                groupId: validatedData.groupId || null,
+                memberId: currentMemberId,
+            },
+        })
+
+        createdUsers.push({ email: currentEmail, password: tempPassword, name: currentName });
+    }
 
     revalidatePath("/dashboard/users")
 
     return { 
       success: true, 
-      user: newDbUser,
-      tempPassword 
+      users: createdUsers
     }
   } catch (error) {
     console.error("createUserAction Error:", error)
